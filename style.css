@@ -1,0 +1,362 @@
+/* ==========================================================================
+   VARIÁVEIS INSTITUCIONAIS
+   ========================================================================== */
+:root {
+    --primary-color: #1e4620;
+    --primary-hover: #143016;
+    --bg-color: #f0f4f1;
+    --card-bg: #ffffff;
+    --text-color: #2c3e50;
+    --border-color: #d1d8e0;
+    --radius: 8px;
+}
+
+/* ==========================================================================
+   ESTILOS INTERNOS (Interface no Navegador / Smartphone)
+   ========================================================================== */
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 15px;
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+}
+
+.container-cadastro {
+    width: 100%;
+    max-width: 900px;
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    box-sizing: border-box;
+}
+
+.header-formulario {
+    text-align: center;
+    margin-bottom: 25px;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 15px;
+}
+
+.header-formulario h2 {
+    color: var(--primary-color);
+    margin: 0 0 8px 0;
+    font-size: 1.6rem;
+}
+
+.header-formulario p {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.container-botoes-tutorial {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.btn-tutorial {
+    background-color: #4b6b4e;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background-color 0.2s;
+}
+
+.btn-tutorial:hover {
+    background-color: #3b543d;
+}
+
+/* Grid Perfeitamente Alinhado */
+.grid-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+/* Ajuste de simetria exata para inputs e selects */
+input, select {
+    width: 100%;
+    height: 45px; /* Altura idêntica para todos os elementos */
+    padding: 0 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-sizing: border-box;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #f9fafb;
+}
+
+select {
+    padding-right: 25px;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://w3.org' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 70, 32, 0.15);
+    background-color: #fff;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f3f4f6;
+    height: 45px; /* Alinhado com a altura dos inputs */
+    padding: 0 12px;
+    border-radius: var(--radius);
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.checkbox-container input {
+    width: auto;
+    height: auto;
+    margin: 0;
+    cursor: pointer;
+}
+
+.btn-gerar {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    width: 100%;
+    margin-top: 25px;
+    box-shadow: 0 4px 6px rgba(30, 70, 32, 0.2);
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-gerar:hover { background-color: var(--primary-hover); }
+.btn-gerar:active { transform: scale(0.98); }
+
+/* Modais Popups */
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 600px;
+    max-height: 85vh;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    animation: surgimentoModal 0.2s ease-out;
+}
+
+@keyframes surgimentoModal {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 20px;
+    border-top-left-radius: var(--radius);
+    border-top-right-radius: var(--radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 { margin: 0; font-size: 1.2rem; }
+
+.btn-fechar-modal {
+    background: none; border: none; color: white;
+    font-size: 1.5rem; cursor: pointer; padding: 0; margin: 0; width: auto;
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.modal-body ol { padding-left: 20px; margin: 0 0 15px 0; }
+.modal-body li { margin-bottom: 10px; }
+.alert-box {
+    background-color: #dfedd6;
+    border-left: 4px solid var(--primary-color);
+    padding: 12px; border-radius: 4px; margin-top: 15px;
+}
+
+.documento-oficial { display: none; }
+
+/* Responsividade Mobile Extrema */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .container-cadastro { padding: 15px; }
+    .grid-form { grid-template-columns: 1fr; gap: 15px; }
+    .form-group.full-width { grid-column: span 1; }
+    .container-botoes-tutorial { flex-direction: column; gap: 8px; }
+    .modal-content { max-height: 90vh; }
+}
+
+/* ==========================================================================
+   ESTILOS DE IMPRESSÃO RIGOROSOS (Padrão Folha A4 Física)
+   ========================================================================== */
+@media print {
+	/* FORÇA O NAVEGADOR A IMPRIMIR OS GRADIENTES E CORES DE FUNDO */
+    html, body {
+        
+    }
+
+    .container-cadastro, .modal-backdrop, button { display: none !important; }
+    .documento-oficial { display: block !important; }
+    
+    html, body {
+    -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        background: #fff;
+        font-family: "Times New Roman", Times, serif;
+        font-size: 12pt;
+        line-height: 1.4;
+        margin: 0; padding: 0; display: block;
+    }
+    
+    .pagina {
+        width: 21cm;
+        height: 29.6cm;
+        padding: 2.5cm 2cm 2cm 3cm;
+        box-sizing: border-box;
+        page-break-after: always;
+        page-break-inside: avoid;
+    }
+    
+    .cabecalho {
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 25px;
+        font-size: 12pt;
+    }
+    
+	.topo-requerimento {
+		display: flex !important;
+		flex-direction: row !important;
+		justify-content: space-between !important;
+		align-items: flex-start !important;
+		width: 100%;
+		margin-bottom: 30px;
+	}
+
+    
+    .dados-identificacao { width: 50%; }
+    
+	.quadro-despacho {
+		display: block !important;
+		width: 48%;
+		border: 1.5px solid #000000 !important;
+		padding: 10px 6px; /* Reduz o padding lateral para ganhar mais espaço útil */
+		font-size: 10.5pt;
+		line-height: 1.4;
+		box-sizing: border-box;
+		background: #ffffff !important;
+		page-break-inside: avoid;
+		overflow: hidden;
+	}
+
+	.linha-assinatura-cmt-reg {
+		white-space: nowrap !important;
+		font-weight: bold;
+		margin-top: 15px;
+		display: block;
+		text-align: center;
+		font-size: 10.5pt; /* Tamanho padrão inicial */
+		padding: 0 5px;
+		box-sizing: border-box;
+	}
+
+
+
+    
+    .recuo-paragrafo {
+        text-indent: 2cm;
+        text-align: justify;
+        margin-bottom: 12px;
+    }
+    
+    .alinhado-direita {
+        text-align: right;
+        margin-top: 35px;
+        margin-bottom: 45px;
+    }
+    
+    .assinatura {
+        text-align: center;
+        margin-top: 45px;
+        font-weight: bold;
+    }
+    
+    .dados-informativos {
+        margin-left: 2cm;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+    
+    .nome-guerra-negrito { font-weight: bold; }
+}
+
+.linhas-parecer-manuscrito {
+    width: 100%;
+    height: 3.8cm; /* Espaço para 4 linhas */
+    margin-top: 15px;
+    margin-bottom: 25px;
+    /* Gradiente otimizado para forçar a linha preta contínua na impressão */
+    background-image: linear-gradient(to bottom, transparent 31px, #000000 31px, #000000 32px);
+    background-size: 100% 32px;
+}
+
+

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Requerimento Militar - 4º RCC</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container-cadastro" id="areaFormulario">
+        <div class="header-formulario">
+            <h2>Prorrogação de Tempo de Serviço</h2>
+            <p>Insira as informações do militar. O sistema salva o rascunho automaticamente.</p>
+        </div>
+
+        <div class="container-botoes-tutorial">
+            <button type="button" class="btn-tutorial" onclick="abrirModal('modalSped')">📂 Como gerar NUP no SPED3</button>
+            <button type="button" class="btn-tutorial" onclick="abrirModal('modalGov')">✍️ Como assinar no Gov.br</button>
+        </div>
+        
+         <!-- ==========================================================================
+       MODAL SPED3
+       ========================================================================== -->
+    <div class="modal-backdrop" id="modalSped" onclick="fecharModalComCliqueFora(event, 'modalSped')">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Instruções: Gerar NUP no SPED3</h3>
+                <button type="button" class="btn-fechar-modal" onclick="fecharModal('modalSped')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <ol>
+                    <li>Acesse o <strong>SPED3</strong> interno através do portal corporativo da Organização Militar.</li>
+                    <li>No menu lateral esquerdo, navegue até a seção <strong>Documentos</strong> e selecione a opção <strong>"Inserir Documentos/NUP"</strong>.</li>
+                    <li>Selecione a Opção <strong>"Reservar Numeração"</strong> e no Campo de Especificação preencha o Motivo da Reserva do NUP</strong>.</li>
+                    <li>Exemplo: <strong>"<em>Requerimento de Engajamento ou Reengajamento do Cb ou Sd EV ou Sd EP Fulano</em>"</strong></li>
+                    <li><strong>Copie este número completo</strong> gerado e cole-o diretamente no campo <strong>"Número do Processo EB (NUP)"</strong> do nosso formulário web antes de clicar em gerar.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       MODAL GOV.BR
+       ========================================================================== -->
+    <div class="modal-backdrop" id="modalGov" onclick="fecharModalComCliqueFora(event, 'modalGov')">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Instruções: Assinatura Eletrônica Gov.br</h3>
+                <button type="button" class="btn-fechar-modal" onclick="fecharModal('modalGov')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <ol>
+                    <li>Preencha rigorosamente todos os campos do formulário e clique no botão verde <strong>"Gerar Documento Oficial"</strong>.</li>
+                    <li>Na janela ou tela de impressão que vai se abrir no seu dispositivo, altere o destino da sua impressora para <strong>"Salvar como PDF"</strong> e faça o download do arquivo.</li>
+                    <li>Acesse o portal oficial de assinaturas do governo brasileiro: <a href="https://iti.br" target="_blank" style="color: #1e4620; font-weight: bold; text-decoration: underline;">assinador.iti.br</a>.</li>
+                    <li>Faça o login seguro utilizando as credenciais da sua conta digital unificada do <strong>Gov.br</strong> (é necessário que a conta seja de nível Prata ou Ouro).</li>
+                    <li>Realize o upload do arquivo PDF do requerimento que você acabou de salvar no seu dispositivo.</li>
+                    <li>Arraste o quadro de assinatura eletrônica e posicione-o exatamente sobre a linha correspondente ao seu nome na página 1.</li>
+                    <li>Clique em assinar, valide o código de segurança enviado para o seu aplicativo ou SMS e baixe o arquivo final assinado (ele virá com o carimbo oficial e QR Code de validação eletrônica da ICP-Brasil).</li>
+                </ol>
+                <div class="alert-box">
+                    <strong>Atenção para a Tramitação:</strong> O arquivo PDF assinado exportado pelo portal Gov.br é o documento oficial autêntico que deverá ser enviado ao Sargenteante para fins de publicação em BI.
+                </div>
+            </div>
+        </div>
+    </div>
+
+        
+        <form id="reqForm" onsubmit="gerarRequerimento(event)">
+            <div class="grid-form">
+                
+                <!-- BLOCADOS DE IDENTIFICAÇÃO -->
+                <div class="form-group">
+                    <label>Nome Completo (Letras Maiúsculas):</label>
+                    <input type="text" id="nomeCompleto" placeholder="WELINTON GARCIA MOZZAQUATRO" required>
+                </div>
+                <div class="form-group">
+                    <label>Nome de Guerra:</label>
+                    <input type="text" id="nomeGuerra" placeholder="W MOZZAQUATRO" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Identidade (Idt):</label>
+                    <input type="text" id="idt" placeholder="000.000.000-0" maxlength="13" required>
+                </div>
+                <div class="form-group">
+                    <label>CPF:</label>
+                    <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Posto/Graduação:</label>
+                    <select id="graduacao">
+                        <option value="Cabo">Cabo</option>
+                        <option value="Soldado EP">Soldado EP</option>
+                        <option value="Soldado EV">Soldado EV</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Subunidade (Fração):</label>
+                    <input type="text" id="subunidade" placeholder="Esqd C Ap" required>
+                </div>
+
+                <!-- CONFIGURAÇÕES DE DATAS -->
+                <div class="form-group">
+                    <label>Tipo de Incorporação / Data de Praça:</label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="isTecnico" onchange="toggleTipoPraca()">
+                        <span>Militar Técnico (Mudar dia e mês)</span>
+                    </label>
+                    <div id="containerDataPraca" style="margin-top: 10px;">
+						
+                        <input type="number" id="anoPraca" min="1950" max="2030" placeholder="Ano de Incorporação" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Início do Engajamento/Reengajamento:</label>
+                    <input type="text" id="dataInicioReen" placeholder="Gerado automaticamente" style="background-color: #e9ecef; font-weight: bold; color: #1e4620;" disabled>
+                </div>
+
+                <!-- DADOS ADMINISTRATIVOS -->
+                <div class="form-group">
+                    <label>Número da Info:</label>
+                    <input type="number" id="numInfo" placeholder="30" required>
+                </div>
+                <div class="form-group">
+                    <label>Seção/Fração Emissora:</label>
+                    <input type="text" id="secaoInfo" placeholder="Sgte" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Número do Processo EB:</label>
+                    <input type="text" id="numEB" placeholder="64664.000942/2024-42" required>
+                </div>
+
+                <!-- DADOS DE HISTÓRICO MILITAR E COMPORTAMENTO -->
+                <div class="form-group">
+                    <label>Função Interna Atual:</label>
+                    <input type="text" id="funcao" placeholder="Auxiliar do Sargenteante" required>
+                </div>
+                <div class="form-group">
+                    <label>Classificação de Comportamento:</label>
+                    <select id="comportamento">
+                        <option value="Excepcional">Excepcional</option>
+                        <option value="Ótimo">Ótimo</option>
+                        <option value="Bom" selected>Bom</option>
+                        <option value="Insuficiente">Insuficiente</option>
+                        <option value="Mau">Mau</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Data de Nascimento:</label>
+                    <input type="date" id="dataNascimento" required>
+                </div>
+                <div class="form-group">
+                    <label>Menção do Último TAF:</label>
+                    <input type="text" id="taf" placeholder="B" required>
+                </div>
+
+                <div class="form-group">
+					<label>Número de Dependentes:</label>
+                    <input type="number" id="dependentes" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Está sub-judice em fórum militar/civil?</label>
+                    <select id="subJudice">
+                        <option value="Não" selected>Não</option>
+                        <option value="Sim">Sim</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Existe vaga na Unidade no NB na QM correspondente?</label>
+                    <select id="existeVaga">
+                        <option value="Sim" selected>Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                </div>
+                
+                
+
+<!-- SEÇÃO DE AUTORIDADES / ASSINATURAS (Organizada e Embutida na Grade) -->
+<div class="form-group full-width secao-divisor">
+    <h3>✒️ Autoridades e Assinaturas</h3>
+    <p>Insira os dados dos comandantes para a geração automática das linhas de assinatura.</p>
+</div>
+
+<div class="form-group card-interno-autoridade">
+    <h4>Comandante do Regimento (4º RCC)</h4>
+    <div class="sub-grid-autoridade">
+        <div class="form-group">
+            <label for="pgCmtRegimento">Posto/Graduação:</label>
+            <input type="text" id="pgCmtRegimento" placeholder="EX: Ten Cel" required>
+        </div>
+        <div class="form-group">
+            <label for="nomeCmtRegimento">Nome Completo:</label>
+            <input type="text" id="nomeCmtRegimento" placeholder="EX: JÚLIO CÉSAR MONTEIRO DE VASCONCELOS JÚNIOR" required>
+        </div>
+    </div>
+</div>
+
+<div class="form-group card-interno-autoridade">
+    <h4>Comandante da Subunidade (Esquadrão)</h4>
+    <div class="sub-grid-autoridade">
+        <div class="form-group">
+            <label for="pgCmtEsqd">Posto/Graduação:</label>
+            <input type="text" id="pgCmtEsqd" placeholder="EX: Cap" required>
+        </div>
+        <div class="form-group">
+            <label for="nomeCmtEsqd">Nome Completo:</label>
+            <input type="text" id="nomeCmtEsqd" placeholder="EX: JOÃO AUGUSTO FERREIRA SOARES" required>
+        </div>
+    </div>
+</div>
+
+
+
+            </div>
+            <button type="submit" class="btn-gerar">Gerar Documento Oficial</button>
+        </form>
+    </div>
+
+    <!-- DOCUMENTO DE IMPRESSÃO EM 3 PÁGINAS -->
+    <div class="documento-oficial" id="documentoPronto">
+        <!-- PÁGINA 1 -->
+        <div class="pagina">
+            <div class="cabecalho">
+                MINISTÉRIO DA DEFESA<br>EXÉRCITO BRASILEIRO<br>
+                CMS-3ª DE - 6ª Bda Inf Bld<br>4° REGIMENTO DE CARROS DE COMBATE<br>
+                (2ª RC TRANSP/1940)<br>REGIMENTO PASSO DO ROSÁRIO
+            </div>
+            <div class="topo-requerimento">
+                <div class="dados-identificacao">
+                    <strong>Requerimento</strong><br>
+                    <strong>EB:</strong> <span class="print-eb"></span><br><br>
+                    Do <span class="print-grad"></span> <span class="print-nome-destaque"></span>
+                </div>
+                <div class="quadro-despacho">
+    <center><strong>DESPACHO</strong></center><br>
+    ( ) Deferido, concedo por 12 (doze) meses a contar de ____/____/______.<br><br>
+    ( ) Indeferido.<br><br>
+    <center>
+        <!-- Deixamos apenas uma tag ID que receberá o bloco completo consolidado -->
+        <div class="linha-assinatura-cmt-reg" id="assinaturaCmtBox"></div>
+        Cmt 4° RCC
+    </center>
+</div>
+
+
+
+
+            </div>
+            <p>Ao Sr Comandante do 4º Regimento de Carros de Combate</p>
+            <p><strong>Objeto:</strong> <span class="print-termo-eng"></span> de praça.</p>
+            <p class="recuo-paragrafo">
+                1. <span class="print-nome-destaque"></span>, Idt <span class="print-idt"></span> e CPF <span class="print-cpf"></span>, 
+                <span class="print-grad"></span>, servindo no 4° Regimento de Carros de Combate (Rosário do Sul-RS), requer a Vossa Senhoria, 
+                <span class="print-termo-eng-minusculo"></span> por um ano, a contar de <span class="print-data-vigencia"></span>.
+            </p>
+            <p class="recuo-paragrafo">
+                2. Tal solicitação encontra amparo no art. 7º e art. 8º da Portaria nº 257, de 30 de abril de 2009 (Aprova as Instruções Gerais para Prorrogação do Tempo de Serviço Militar de Cabos e Soldados IG 10-06), alterada pela Portaria nº 380 de 29 de maio de 2012 e inciso XLIV do art.21 da Portaria nº 816, de 19 de dezembro de 2003 (Regulamento Interno e dos Serviços Gerais - RISG).
+            </p>
+            <p class="recuo-paragrafo">3. É a primeira vez que requer.</p>
+            <p class="recuo-paragrafo">Nestes termos, pede deferimento.</p>
+            <div class="alinhado-direita">Rosário do Sul, <span class="print-data-corrente"></span>.</div>
+            <div class="assinatura">
+                ____________________________________________________<br>
+                <span class="print-nome-destaque"></span> - <span class="print-grad-caps"></span>
+            </div>
+        </div>
+
+        <!-- PÁGINA 2 -->
+        <div class="pagina">
+            <div class="cabecalho">
+                MINISTÉRIO DA DEFESA<br>EXÉRCITO BRASILEIRO<br>
+                4° REGIMENTO DE CARROS DE COMBATE<br>REGIMENTO PASSO DO ROSÁRIO
+            </div>
+            <div class="alinhado-direita" style="margin-top:0px; margin-bottom: 10px;">
+                Rosário do Sul, RS, <span class="print-data-corrente"></span>
+            </div>
+            <p>
+                <strong>Info n°</strong> <span class="print-info"></span> - <span class="print-secao"></span> / <span class="print-su"></span> / 4° RCC<br>
+                <strong>Do</strong> Comandante do Esquadrão <span class="print-su"></span><br>
+                <strong>Ao</strong> Sr Comandante do 4° Regimento de Carros de Combate
+            </p>
+            <p><strong>Assunto:</strong> Prorrogação de tempo de serviço</p>
+            <p class="recuo-paragrafo">
+                1. Requerimento em que o <span class="print-grad"></span> <span class="print-nome-destaque"></span>, servindo nesta Subunidade, requer <span class="print-termo-eng-minusculo"></span> por um ano, a contar de <span class="print-data-vigencia"></span>.
+            </p>
+            <p>2. <strong>INFORMAÇÃO</strong></p>
+            <p style="margin-left: 1cm;">a. Amparo do Requerente:</p>
+            <p class="recuo-paragrafo" style="margin-left: 1cm;">
+                Tal solicitação encontra amparo no art. 7° e art. 8° da Portaria nº 257, de 30 de abril de 2009 (Aprova as Instruções Gerais para Prorrogação do Tempo de Serviço Militar de Cabos e Soldados - IG 10-06), alterada pela Portaria n° 380 de 29 de maio de 2012 e inciso XLIV do art.21 da Portaria n° 816, de 19 de dezembro de 2003 (Regulamento Interno e dos Serviços Gerais - RISG).
+            </p>
+            <p style="margin-left: 1cm;">b. Estudo Fundamentado</p>
+            <p style="margin-left: 1.5cm;">1) Dados informativos sobre o requerente:</p>
+            <div class="dados-informativos">
+                - Nome: <span class="print-nome-destaque"></span><br>
+                - Graduação: <span class="print-grad"></span><br>
+                - Identidade: <span class="print-idt"></span><br>
+                - Função: <span class="print-funcao"></span><br>
+                - Data de Praça: <span class="print-data-incorporacao"></span> <br>
+                - Data de Nascimento: <span class="print-nasc"></span><br>
+                - Está classificado no comportamento: <span class="print-comportamento"></span><br>
+                - Está sub-judice em fórum militar ou civil: <span class="print-subjudice"></span><br>
+                - Existe vaga na Unidade no NB na QM correspondente: <span class="print-vaga"></span><br>
+                - Menção do último TAF: "<span class="print-taf-val"></span>"<br>
+                - Número de dependentes: <span class="print-dependentes"></span>
+            </div>
+            <p style="margin-left: 1.5cm;">2) Apreciação</p>
+            <p class="recuo-paragrafo" style="margin-left: 1.5cm; ">
+                O requerente pleiteia reengajamento por um ano a contar de <span class="print-data-vigencia"></span>, havendo coerência entre o que solicita e os dispositivos citados como amparo.
+            </p>
+        </div>
+        
+        <!-- PÁGINA 3: PARECER E ENCAMINHAMENTO -->
+        <div class="pagina">
+            <p style="font-size: 10pt; text-align: center;">
+                (Info n° <span class="print-info"></span> - <span class="print-secao"></span> / <span class="print-su"></span> / 4° RCC, de <span class="print-data-corrente"></span> - EB <span class="print-eb"></span>.......2/2)
+            </p>
+            
+            <br>
+            <p>3. <strong>PARECER</strong></p>
+<div class="linhas-parecer-manuscrito"></div>
+
+            <p>4. O presente requerimento permaneceu _______ dia(s) nesta OM para fins de informação e encaminhamento.</p>
+            
+            <br><br><br>
+            <div class="assinatura">
+				<span class="print-nome-cmt-esqd"></span> - <span class="print-pg-cmt-esqd"></span><br>
+				Comandante do <span class="print-su"></span>
+			</div>
+
+        </div>
+
+<script src="script.js"></script>
+</body>
+</html>
