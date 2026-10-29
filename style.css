@@ -12,7 +12,7 @@
 }
 
 /* ==========================================================================
-   ESTILOS INTERNOS (Interface no Navegador / Smartphone)
+   ESTILOS DE TELA
    ========================================================================== */
 body {
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
@@ -73,11 +73,8 @@ body {
     transition: background-color 0.2s;
 }
 
-.btn-tutorial:hover {
-    background-color: #3b543d;
-}
+.btn-tutorial:hover { background-color: #3b543d; }
 
-/* Grid Perfeitamente Alinhado */
 .grid-form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -90,9 +87,7 @@ body {
     justify-content: flex-start;
 }
 
-.form-group.full-width {
-    grid-column: span 2;
-}
+.form-group.full-width { grid-column: span 2; }
 
 label {
     font-weight: 600;
@@ -101,10 +96,9 @@ label {
     color: #4b5563;
 }
 
-/* Ajuste de simetria exata para inputs e selects */
 input, select {
     width: 100%;
-    height: 45px; /* Altura idêntica para todos os elementos */
+    height: 45px;
     padding: 0 12px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
@@ -118,7 +112,7 @@ input, select {
 select {
     padding-right: 25px;
     appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://w3.org' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 16px;
@@ -136,7 +130,7 @@ input:focus, select:focus {
     align-items: center;
     gap: 10px;
     background: #f3f4f6;
-    height: 45px; /* Alinhado com a altura dos inputs */
+    height: 45px;
     padding: 0 12px;
     border-radius: var(--radius);
     box-sizing: border-box;
@@ -148,6 +142,31 @@ input:focus, select:focus {
     height: auto;
     margin: 0;
     cursor: pointer;
+}
+
+.secao-divisor {
+    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 2px dashed var(--border-color);
+}
+.secao-divisor h3 { color: var(--primary-color); margin: 0 0 5px 0; }
+.secao-divisor p { margin: 0 0 10px 0; font-size: 0.85rem; color: #666; }
+
+.card-interno-autoridade {
+    background: #f8faf8;
+    padding: 15px;
+    border-radius: var(--radius);
+    border-left: 4px solid var(--primary-color);
+}
+.card-interno-autoridade h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+}
+.sub-grid-autoridade {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 12px;
 }
 
 .btn-gerar {
@@ -168,7 +187,9 @@ input:focus, select:focus {
 .btn-gerar:hover { background-color: var(--primary-hover); }
 .btn-gerar:active { transform: scale(0.98); }
 
-/* Modais Popups */
+/* ==========================================================================
+   MODAIS
+   ========================================================================== */
 .modal-backdrop {
     display: none;
     position: fixed;
@@ -196,7 +217,7 @@ input:focus, select:focus {
 
 @keyframes surgimentoModal {
     from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    to   { transform: scale(1);    opacity: 1; }
 }
 
 .modal-header {
@@ -223,18 +244,21 @@ input:focus, select:focus {
     font-size: 0.95rem;
     line-height: 1.6;
 }
-
 .modal-body ol { padding-left: 20px; margin: 0 0 15px 0; }
 .modal-body li { margin-bottom: 10px; }
+
 .alert-box {
     background-color: #dfedd6;
     border-left: 4px solid var(--primary-color);
     padding: 12px; border-radius: 4px; margin-top: 15px;
 }
 
+/* Documento oculto na tela */
 .documento-oficial { display: none; }
 
-/* Responsividade Mobile Extrema */
+/* ==========================================================================
+   RESPONSIVIDADE MOBILE
+   ========================================================================== */
 @media (max-width: 768px) {
     body { padding: 10px; }
     .container-cadastro { padding: 15px; }
@@ -242,121 +266,166 @@ input:focus, select:focus {
     .form-group.full-width { grid-column: span 1; }
     .container-botoes-tutorial { flex-direction: column; gap: 8px; }
     .modal-content { max-height: 90vh; }
+    .sub-grid-autoridade { grid-template-columns: 1fr; }
 }
 
 /* ==========================================================================
-   ESTILOS DE IMPRESSÃO RIGOROSOS (Padrão Folha A4 Física)
+   IMPRESSÃO A4
+   Margens: Esquerda 3cm | Direita 1cm | Superior 1cm | Inferior 2cm
    ========================================================================== */
 @media print {
-	/* FORÇA O NAVEGADOR A IMPRIMIR OS GRADIENTES E CORES DE FUNDO */
-    html, body {
-        
+
+    /* ============================================================
+       OPÇÃO ESCOLHIDA: CENTRALIZADO
+       Para manter ABNT (3cm esq / 1cm dir), troque para:
+       margin: 1cm 1cm 2cm 3cm;
+       ============================================================ */
+    @page {
+        size: A4 portrait;
+        margin: 1cm 2cm 2cm 2cm;   /* ← top right bottom left — SIMÉTRICO */
     }
 
-    .container-cadastro, .modal-backdrop, button { display: none !important; }
-    .documento-oficial { display: block !important; }
-    
     html, body {
-    -webkit-print-color-adjust: exact !important;
+        -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
-        background: #fff;
+        background: #fff !important;
         font-family: "Times New Roman", Times, serif;
         font-size: 12pt;
         line-height: 1.4;
-        margin: 0; padding: 0; display: block;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
     }
-    
+
+    .container-cadastro,
+    .modal-backdrop,
+    button { display: none !important; }
+
+    .documento-oficial { display: block !important; }
+
+    /* Página em fluxo normal — a margem vem do @page */
     .pagina {
-        width: 21cm;
-        height: 29.6cm;
-        padding: 2.5cm 2cm 2cm 3cm;
+        width: auto !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: 26.5cm !important;  /* ← limite de segurança (26.7 útil - folga) */
+        padding: 0 !important;
+        margin: 0 !important;
         box-sizing: border-box;
-        page-break-after: always;
-        page-break-inside: avoid;
+        page-break-inside: auto;
+        break-inside: auto;
+        overflow: hidden;
+        position: relative;
     }
-    
+
+    /* Só as duas primeiras páginas quebram */
+    .pagina:nth-child(1),
+    .pagina:nth-child(2) {
+        page-break-after: always;
+        break-after: page;
+    }
+
+    .pagina:nth-child(3) {
+        page-break-after: auto;
+        break-after: auto;
+    }
+
+    .brasao-republica {
+        display: block !important;
+        width: 2.2cm;
+        height: auto;
+        margin: 0 auto 8px auto;
+    }
+
     .cabecalho {
         text-align: center;
         font-weight: bold;
         text-transform: uppercase;
-        margin-bottom: 25px;
+        margin-bottom: 20px;  /* era 25px */
         font-size: 12pt;
+        line-height: 1.3;
     }
-    
-	.topo-requerimento {
-		display: flex !important;
-		flex-direction: row !important;
-		justify-content: space-between !important;
-		align-items: flex-start !important;
-		width: 100%;
-		margin-bottom: 30px;
-	}
 
-    
+    .topo-requerimento {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+        width: 100%;
+        margin-bottom: 25px;  /* era 30px */
+    }
+
     .dados-identificacao { width: 50%; }
-    
-	.quadro-despacho {
-		display: block !important;
-		width: 48%;
-		border: 1.5px solid #000000 !important;
-		padding: 10px 6px; /* Reduz o padding lateral para ganhar mais espaço útil */
-		font-size: 10.5pt;
-		line-height: 1.4;
-		box-sizing: border-box;
-		background: #ffffff !important;
-		page-break-inside: avoid;
-		overflow: hidden;
-	}
 
-	.linha-assinatura-cmt-reg {
-		white-space: nowrap !important;
-		font-weight: bold;
-		margin-top: 15px;
-		display: block;
-		text-align: center;
-		font-size: 10.5pt; /* Tamanho padrão inicial */
-		padding: 0 5px;
-		box-sizing: border-box;
-	}
+    .quadro-despacho {
+        display: block !important;
+        width: 48%;
+        border: 1.5px solid #000 !important;
+        padding: 8px 6px;
+        font-size: 10.5pt;
+        line-height: 1.4;
+        box-sizing: border-box;
+        background: #fff !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        overflow: hidden;
+    }
 
+    .linha-assinatura-cmt-reg {
+        white-space: nowrap !important;
+        font-weight: bold;
+        margin-top: 12px;
+        display: block;
+        text-align: center;
+        font-size: 10.5pt;
+        padding: 0 2px;
+        box-sizing: border-box;
+        max-width: 100%;
+        overflow: hidden;
+    }
 
-
-    
     .recuo-paragrafo {
         text-indent: 2cm;
         text-align: justify;
-        margin-bottom: 12px;
+        margin-bottom: 10px;  /* era 12px */
     }
-    
+
     .alinhado-direita {
         text-align: right;
-        margin-top: 35px;
-        margin-bottom: 45px;
+        margin-top: 20px !important;    /* era 35px */
+        margin-bottom: 25px !important; /* era 45px */
     }
-    
+
     .assinatura {
         text-align: center;
-        margin-top: 45px;
+        margin-top: 25px !important;    /* era 45px */
         font-weight: bold;
     }
-    
+
     .dados-informativos {
         margin-left: 2cm;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
         line-height: 1.4;
     }
-    
+
     .nome-guerra-negrito { font-weight: bold; }
+
+    .linhas-parecer-manuscrito {
+        width: 100%;
+        height: 3.8cm;
+        margin-top: 15px;
+        margin-bottom: 20px;
+        background-image: linear-gradient(
+            to bottom,
+            transparent 31px,
+            #000 31px,
+            #000 32px
+        );
+        background-size: 100% 32px;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
 }
-
-.linhas-parecer-manuscrito {
-    width: 100%;
-    height: 3.8cm; /* Espaço para 4 linhas */
-    margin-top: 15px;
-    margin-bottom: 25px;
-    /* Gradiente otimizado para forçar a linha preta contínua na impressão */
-    background-image: linear-gradient(to bottom, transparent 31px, #000000 31px, #000000 32px);
-    background-size: 100% 32px;
-}
-
-
