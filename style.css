@@ -429,3 +429,13 @@ input:focus, select:focus {
         print-color-adjust: exact !important;
     }
 }
+
+	/* Feedback visual */
+	.campo-valido {
+		border-color: #27ae60 !important;
+		background-color: #f0fff4 !important;
+	}
+	.campo-invalido {
+		border-color: #c0392b !important;
+		background-color: #fff5f5 !important;
+	}
