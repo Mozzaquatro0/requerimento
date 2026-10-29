@@ -19,6 +19,56 @@ document.addEventListener("DOMContentLoaded", () => {
             elemento.addEventListener("input",  () => localStorage.setItem(id, elemento.value));
             elemento.addEventListener("change", () => localStorage.setItem(id, elemento.value));
         }
+        
+		// ============================================================================
+		// VALIDAÇÃO EM TEMPO REAL — feedback visual nos campos
+		// ============================================================================
+		const regrasTempoReal = {
+			cpf: {
+				regex: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
+				extra: (v) => validarCPF(v),
+				msg: "CPF inválido"
+			},
+			idt: {
+				regex: /^\d{3}\.\d{3}\.\d{3}-\d{1}$/,
+				msg: "Idt inválida"
+			},
+			numEB: {
+				regex: /^\d{5}\.\d{6}\/\d{4}-\d{2}$/,
+				msg: "NUP inválido"
+			},
+			nomeCompleto: {
+				extra: (v) => v.length >= 10 && v === v.toUpperCase() && /^[A-ZÀ-Ú\s]+$/.test(v),
+				msg: "Nome completo em MAIÚSCULAS (mín. 10 letras)"
+			},
+			nomeGuerra: {
+				extra: (v) => v.length >= 2 && v === v.toUpperCase(),
+				msg: "Nome de guerra em MAIÚSCULAS"
+			}
+		};
+
+Object.keys(regrasTempoReal).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const regra = regrasTempoReal[id];
+
+    const validar = () => {
+        const v = el.value.trim();
+        if (v === "") {
+            el.classList.remove("campo-valido", "campo-invalido");
+            return;
+        }
+        let ok = true;
+        if (regra.regex) ok = ok && regra.regex.test(v);
+        if (regra.extra) ok = ok && regra.extra(v);
+        el.classList.toggle("campo-valido", ok);
+        el.classList.toggle("campo-invalido", !ok);
+        el.title = ok ? "" : regra.msg;
+    };
+
+    el.addEventListener("input", validar);
+    el.addEventListener("blur", validar);
+});
     });
 
     // Vigência padrão (não-técnico): 01/03 do próximo ano
@@ -96,6 +146,31 @@ document.getElementById('numEB').addEventListener('input', function (e) {
 
     e.target.value = formatado;
 });
+
+/* ==========================================================================
+   VALIDAÇÃO DE CPF (dígito verificador)
+   ========================================================================== */
+function validarCPF(cpfFormatado) {
+    const cpf = cpfFormatado.replace(/\D/g, "");
+    if (cpf.length !== 11) return false;
+    if (/^(\d)\1{10}$/.test(cpf)) return false; // todos dígitos iguais
+
+    // Valida 1º dígito
+    let soma = 0;
+    for (let i = 0; i < 9; i++) soma += parseInt(cpf[i]) * (10 - i);
+    let resto = (soma * 10) % 11;
+    if (resto === 10) resto = 0;
+    if (resto !== parseInt(cpf[9])) return false;
+
+    // Valida 2º dígito
+    soma = 0;
+    for (let i = 0; i < 10; i++) soma += parseInt(cpf[i]) * (11 - i);
+    resto = (soma * 10) % 11;
+    if (resto === 10) resto = 0;
+    if (resto !== parseInt(cpf[10])) return false;
+
+    return true;
+}
 
 /* ==========================================================================
    3. MODAIS
@@ -272,56 +347,210 @@ function formatarDataPorExtenso(dataStr) {
    ========================================================================== */
 function gerarRequerimento(event) {
     event.preventDefault();
-    
-    
 
-    const nomeCompleto   = document.getElementById("nomeCompleto").value;
-    const nomeGuerra     = document.getElementById("nomeGuerra").value;
+    // ============================================================
+    // VALIDAÇÕES — aborta antes de gerar se algo estiver errado
+    // ============================================================
+    const erros = [];
+    const foco = [];
+
+    // helper: verifica e empurra erro
+    const exigir = (condicao, campoId, mensagem) => {
+        if (!condicao) {
+            erros.push(mensagem);
+            if (campoId) foco.push(campoId);
+        }
+    };
+
+    // ---- referências ----
+    const nomeCompleto   = document.getElementById("nomeCompleto").value.trim();
+    const nomeGuerra     = document.getElementById("nomeGuerra").value.trim();
     const graduacao      = document.getElementById("graduacao").value;
-    const idt            = document.getElementById("idt").value;
-    const cpf            = document.getElementById("cpf").value;
-    const subunidade     = document.getElementById("subunidade").value;
-    const funcao         = document.getElementById("funcao").value;
-    const numInfo        = document.getElementById("numInfo").value;
-    const secaoInfo      = document.getElementById("secaoInfo").value;
-    const numEB          = document.getElementById("numEB").value;
+    const idt            = document.getElementById("idt").value.trim();
+    const cpf            = document.getElementById("cpf").value.trim();
+    const subunidade     = document.getElementById("subunidade").value.trim();
+    const funcao         = document.getElementById("funcao").value.trim();
+    const numInfo        = document.getElementById("numInfo").value.trim();
+    const secaoInfo      = document.getElementById("secaoInfo").value.trim();
+    const numEB          = document.getElementById("numEB").value.trim();
     const comportamento  = document.getElementById("comportamento").value;
     const dataNascimento = document.getElementById("dataNascimento").value;
-    const taf            = document.getElementById("taf").value;
-    const dependentes    = document.getElementById("dependentes").value;
+    const taf            = document.getElementById("taf").value.trim();
+    const dependentes    = document.getElementById("dependentes").value.trim();
     const subJudice      = document.getElementById("subJudice").value;
     const existeVaga     = document.getElementById("existeVaga").value;
-    const pgCmtRegimento = document.getElementById("pgCmtRegimento").value;
-    const nomeCmtRegimento = document.getElementById("nomeCmtRegimento").value;
-    const pgCmtEsqd      = document.getElementById("pgCmtEsqd").value;
-    const nomeCmtEsqd    = document.getElementById("nomeCmtEsqd").value;
+    const pgCmtRegimento = document.getElementById("pgCmtRegimento").value.trim();
+    const nomeCmtRegimento = document.getElementById("nomeCmtRegimento").value.trim();
+    const pgCmtEsqd      = document.getElementById("pgCmtEsqd").value.trim();
+    const nomeCmtEsqd    = document.getElementById("nomeCmtEsqd").value.trim();
+    const isTecnico      = document.getElementById("isTecnico").checked;
+
+    // ---- NOME COMPLETO ----
+    exigir(nomeCompleto.length >= 10, "nomeCompleto",
+        "Nome completo muito curto (mínimo 10 caracteres).");
+    exigir(nomeCompleto === nomeCompleto.toUpperCase(), "nomeCompleto",
+        "Nome completo deve estar em LETRAS MAIÚSCULAS.");
+    exigir(/^[A-ZÀ-Ú\s]+$/.test(nomeCompleto), "nomeCompleto",
+        "Nome completo deve conter apenas letras e espaços.");
+
+    // ---- NOME DE GUERRA ----
+    exigir(nomeGuerra.length >= 2 && nomeGuerra.length <= 30, "nomeGuerra",
+        "Nome de guerra inválido (2 a 30 caracteres).");
+    exigir(nomeGuerra === nomeGuerra.toUpperCase(), "nomeGuerra",
+        "Nome de guerra deve estar em LETRAS MAIÚSCULAS.");
+    // Nome de guerra precisa aparecer no nome completo
+    const nomeGuerraLimpo = nomeGuerra.replace(/\s+/g, " ");
+    const partes = nomeGuerraLimpo.split(" ");
+    const todasNoNome = partes.every(p => nomeCompleto.includes(p));
+    exigir(todasNoNome, "nomeGuerra",
+        "Nome de guerra deve conter palavras presentes no nome completo.");
+
+    // ---- IDT ----
+    exigir(/^\d{3}\.\d{3}\.\d{3}-\d{1}$/.test(idt), "idt",
+        "Idt inválida. Formato esperado: 000.000.000-0.");
+
+    // ---- CPF (formato + dígito verificador) ----
+    exigir(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf), "cpf",
+        "CPF inválido. Formato esperado: 000.000.000-00.");
+    if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf)) {
+        exigir(validarCPF(cpf), "cpf", "CPF com dígito verificador inválido.");
+    }
+
+    // ---- SUBUNIDADE ----
+    exigir(subunidade.length >= 2 && subunidade.length <= 30, "subunidade",
+        "Subunidade inválida (2 a 30 caracteres).");
+
+    // ---- FUNÇÃO ----
+    exigir(funcao.length >= 3 && funcao.length <= 60, "funcao",
+        "Função interna inválida (3 a 60 caracteres).");
+
+    // ---- INFO ----
+    exigir(/^\d{1,4}$/.test(numInfo), "numInfo",
+        "Número da Info deve ser numérico (1 a 4 dígitos).");
+
+    // ---- SEÇÃO ----
+    exigir(secaoInfo.length >= 2 && secaoInfo.length <= 20, "secaoInfo",
+        "Seção/Fração emissora inválida (2 a 20 caracteres).");
+
+    // ---- NUP ----
+    exigir(/^\d{5}\.\d{6}\/\d{4}-\d{2}$/.test(numEB), "numEB",
+        "NUP inválido. Formato esperado: 00000.000000/0000-00.");
+
+    // ---- TAF ----
+    exigir(taf.length >= 1 && taf.length <= 3, "taf",
+        "Menção do TAF inválida (1 a 3 caracteres — ex: B, R, MB).");
+    exigir(/^[A-Za-z]+$/.test(taf), "taf",
+        "Menção do TAF deve conter apenas letras.");
+
+    // ---- DEPENDENTES ----
+    exigir(/^\d{1,2}$/.test(dependentes), "dependentes",
+        "Número de dependentes deve ser numérico (0 a 99).");
+    if (/^\d+$/.test(dependentes)) {
+        const n = parseInt(dependentes, 10);
+        exigir(n >= 0 && n <= 20, "dependentes",
+            "Número de dependentes deve estar entre 0 e 20.");
+    }
+
+    // ---- DATA DE NASCIMENTO ----
+    if (!dataNascimento) {
+        erros.push("Data de nascimento é obrigatória.");
+        foco.push("dataNascimento");
+    } else {
+        const nasc = new Date(dataNascimento + "T00:00:00");
+        const hoje = new Date();
+        const idade = Math.floor((hoje - nasc) / (365.25 * 24 * 3600 * 1000));
+        exigir(idade >= 17 && idade <= 70, "dataNascimento",
+            `Idade inválida (${idade} anos). Militar deve ter entre 17 e 70 anos.`);
+    }
+
+    // ---- DATA DE PRAÇA ----
+    if (isTecnico) {
+        const dtTec = document.getElementById("dataPracaCompleta");
+        if (!dtTec || !dtTec.value) {
+            erros.push("Data de praça é obrigatória para militar técnico.");
+            foco.push("dataPracaCompleta");
+        } else {
+            const praca = new Date(dtTec.value + "T00:00:00");
+            const hoje = new Date();
+            exigir(praca <= hoje, "dataPracaCompleta",
+                "Data de praça não pode ser no futuro.");
+            exigir(praca.getFullYear() >= 1950, "dataPracaCompleta",
+                "Data de praça não pode ser anterior a 1950.");
+        }
+    } else {
+        const anoPraca = document.getElementById("anoPraca");
+        const ano = parseInt(anoPraca ? anoPraca.value : "", 10);
+        exigir(!isNaN(ano) && ano >= 1950 && ano <= new Date().getFullYear(),
+            "anoPraca",
+            "Ano de incorporação inválido (1950 até o ano atual).");
+    }
+
+    // ---- COMANDANTES ----
+    exigir(pgCmtRegimento.length >= 3, "pgCmtRegimento",
+        "Posto/Grad do Cmt do Regimento inválido.");
+    exigir(nomeCmtRegimento.length >= 10, "nomeCmtRegimento",
+        "Nome do Cmt do Regimento muito curto (mínimo 10 caracteres).");
+    exigir(pgCmtEsqd.length >= 3, "pgCmtEsqd",
+        "Posto/Grad do Cmt do Esqd inválido.");
+    exigir(nomeCmtEsqd.length >= 10, "nomeCmtEsqd",
+        "Nome do Cmt do Esqd muito curto (mínimo 10 caracteres).");
+
+    // ---- REGRAS DE NEGÓCIO ----
+    // Sd EV não pode ter "Reengajamento" (é sempre Engajamento)
+    // já tratado no código
+    // Cabo / Sd EP nunca são "Engajamento" — é Reengajamento
+    // (informativo — não bloqueia)
+
+    // ============================================================
+    // SE HOUVE ERROS, ABORTA E MOSTRA
+    // ============================================================
+    if (erros.length > 0) {
+        const lista = erros.map(e => "• " + e).join("\n");
+        alert("Corrija os seguintes campos antes de gerar o documento:\n\n" + lista);
+
+        // Destaca o primeiro campo com erro
+        if (foco[0]) {
+            const el = document.getElementById(foco[0]);
+            if (el) {
+                el.focus();
+                el.style.borderColor = "#c0392b";
+                el.style.boxShadow = "0 0 0 3px rgba(192,57,43,0.2)";
+                setTimeout(() => {
+                    el.style.borderColor = "";
+                    el.style.boxShadow = "";
+                }, 2500);
+            }
+        }
+        return; // NÃO gera o documento
+    }
+
+    // ============================================================
+    // A PARTIR DAQUI, O CÓDIGO ORIGINAL DE GERAÇÃO
+    // ============================================================
 
     // Termo: Reengajamento (Cabo, Sd EP) × Engajamento (Sd EV)
     let termoEngajamento = "Reengajamento";
     if (graduacao === "Soldado EV") termoEngajamento = "Engajamento";
     const termoEngajamentoMinusculo = termoEngajamento.toLowerCase();
 
-	/* ---------- DATA DE VIGÊNCIA (formato YYYY-MM-DD) ---------- */
-	// Regra: sempre "ano atual + 1". Para militar TÉCNICO, o dia e o mês
-	// seguem a data de praça; para não-técnico, fixo em 01/03.
-	const anoVigencia = new Date().getFullYear() + 1;
-	let dataInicioReen;
+    /* ---------- DATA DE VIGÊNCIA (ano atual + 1) ---------- */
+    const anoVigencia = new Date().getFullYear() + 1;
+    let dataInicioReen;
+    if (isTecnico) {
+        const dtTec = document.getElementById("dataPracaCompleta").value;
+        if (dtTec) {
+            const p = dtTec.split("-");
+            dataInicioReen = `${anoVigencia}-${p[1]}-${p[2]}`;
+        } else {
+            dataInicioReen = `${anoVigencia}-03-01`;
+        }
+    } else {
+        dataInicioReen = `${anoVigencia}-03-01`;
+    }
 
-	if (document.getElementById("isTecnico").checked) {
-		const dataPraca = document.getElementById("dataPracaCompleta").value; // YYYY-MM-DD
-		if (dataPraca) {
-			const p = dataPraca.split("-"); // [ano, mes, dia]
-			dataInicioReen = `${anoVigencia}-${p[1]}-${p[2]}`;
-		} else {
-			dataInicioReen = `${anoVigencia}-03-01`;
-		}
-	} else {
-		dataInicioReen = `${anoVigencia}-03-01`;
-	}
-
-    /* ---------- DATA DE PRAÇA (dd/mm/aaaa) ---------- */
+    /* ---------- DATA DE PRAÇA ---------- */
     let dataPracaFormatada = "";
-    if (document.getElementById("isTecnico").checked) {
+    if (isTecnico) {
         const dtCompleta = document.getElementById("dataPracaCompleta").value;
         if (dtCompleta) {
             const p = dtCompleta.split("-");
@@ -355,7 +584,6 @@ function gerarRequerimento(event) {
     document.querySelectorAll(".print-eb").forEach(el => el.innerText = numEB);
     document.querySelectorAll(".print-comportamento").forEach(el => el.innerText = comportamento);
     document.querySelectorAll(".print-taf-val").forEach(el => el.innerText = taf.toUpperCase());
-
     document.querySelectorAll(".print-data-corrente").forEach(el => el.innerText = dataHojeStr);
     document.querySelectorAll(".print-data-vigencia").forEach(el => el.innerText = formatarDataPorExtenso(dataInicioReen));
     document.querySelectorAll(".print-data-incorporacao").forEach(el => el.innerText = dataPracaFormatada);
@@ -365,25 +593,19 @@ function gerarRequerimento(event) {
     document.querySelectorAll(".print-dependentes").forEach(el => el.innerText = dependentes);
     document.querySelectorAll(".print-pg-cmt-esqd").forEach(el => el.innerText = pgCmtEsqd);
     document.querySelectorAll(".print-nome-cmt-esqd").forEach(el => el.innerText = nomeCmtEsqd.toUpperCase());
-
     document.querySelectorAll(".print-termo-eng").forEach(el => el.innerText = termoEngajamento);
     document.querySelectorAll(".print-termo-eng-minusculo").forEach(el => el.innerText = termoEngajamentoMinusculo);
 
+    ajustarFonteAssinatura(nomeCmtRegimento, pgCmtRegimento);
 
-	// Ajusta fonte da assinatura do Cmt do Regimento
-	ajustarFonteAssinatura(nomeCmtRegimento, pgCmtRegimento);
+    // Nome sugerido do PDF
+    const tituloOriginal = document.title;
+    document.title = `Requerimento do ${graduacao} ${nomeGuerra.toUpperCase()}`;
+    const restaurarTitulo = () => {
+        document.title = tituloOriginal;
+        window.removeEventListener("afterprint", restaurarTitulo);
+    };
+    window.addEventListener("afterprint", restaurarTitulo);
 
-	// ===== NOME SUGERIDO DO ARQUIVO PDF =====
-	// O navegador usa o <title> como nome default em "Salvar como PDF"
-	const tituloOriginal = document.title;
-	document.title = `Requerimento do ${graduacao} ${nomeGuerra.toUpperCase()}`;
-
-	const restaurarTitulo = () => {
-		document.title = tituloOriginal;
-		window.removeEventListener("afterprint", restaurarTitulo);
-	};
-	window.addEventListener("afterprint", restaurarTitulo);
-
-	// Abre o diálogo de impressão (Salvar como PDF)
-	window.print();
+    window.print();
 }
