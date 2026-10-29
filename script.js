@@ -272,6 +272,8 @@ function formatarDataPorExtenso(dataStr) {
    ========================================================================== */
 function gerarRequerimento(event) {
     event.preventDefault();
+    
+    
 
     const nomeCompleto   = document.getElementById("nomeCompleto").value;
     const nomeGuerra     = document.getElementById("nomeGuerra").value;
@@ -367,9 +369,21 @@ function gerarRequerimento(event) {
     document.querySelectorAll(".print-termo-eng").forEach(el => el.innerText = termoEngajamento);
     document.querySelectorAll(".print-termo-eng-minusculo").forEach(el => el.innerText = termoEngajamentoMinusculo);
 
-    // Ajusta fonte da assinatura do Cmt do Regimento
-    ajustarFonteAssinatura(nomeCmtRegimento, pgCmtRegimento);
 
-    // Abre o diálogo de impressão (Salvar como PDF)
-    window.print();
+	// Ajusta fonte da assinatura do Cmt do Regimento
+	ajustarFonteAssinatura(nomeCmtRegimento, pgCmtRegimento);
+
+	// ===== NOME SUGERIDO DO ARQUIVO PDF =====
+	// O navegador usa o <title> como nome default em "Salvar como PDF"
+	const tituloOriginal = document.title;
+	document.title = `Requerimento do ${graduacao} ${nomeGuerra.toUpperCase()}`;
+
+	const restaurarTitulo = () => {
+		document.title = tituloOriginal;
+		window.removeEventListener("afterprint", restaurarTitulo);
+	};
+	window.addEventListener("afterprint", restaurarTitulo);
+
+	// Abre o diálogo de impressão (Salvar como PDF)
+	window.print();
 }
