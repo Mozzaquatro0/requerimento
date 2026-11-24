@@ -30,7 +30,7 @@ body {
     background: var(--card-bg);
     padding: 25px;
     border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     box-sizing: border-box;
 }
 
@@ -69,11 +69,13 @@ body {
     font-size: 0.9rem;
     font-weight: bold;
     width: 100%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.2s;
 }
 
-.btn-tutorial:hover { background-color: #3b543d; }
+.btn-tutorial:hover {
+    background-color: #3b543d;
+}
 
 .grid-form {
     display: grid;
@@ -87,7 +89,9 @@ body {
     justify-content: flex-start;
 }
 
-.form-group.full-width { grid-column: span 2; }
+.form-group.full-width {
+    grid-column: span 2;
+}
 
 label {
     font-weight: 600;
@@ -135,6 +139,7 @@ input:focus, select:focus {
     border-radius: var(--radius);
     box-sizing: border-box;
     cursor: pointer;
+    margin-bottom: 0;
 }
 
 .checkbox-container input {
@@ -149,8 +154,17 @@ input:focus, select:focus {
     padding-top: 20px;
     border-top: 2px dashed var(--border-color);
 }
-.secao-divisor h3 { color: var(--primary-color); margin: 0 0 5px 0; }
-.secao-divisor p { margin: 0 0 10px 0; font-size: 0.85rem; color: #666; }
+
+.secao-divisor h3 {
+    color: var(--primary-color);
+    margin: 0 0 5px 0;
+}
+
+.secao-divisor p {
+    margin: 0 0 10px 0;
+    font-size: 0.85rem;
+    color: #666;
+}
 
 .card-interno-autoridade {
     background: #f8faf8;
@@ -158,11 +172,13 @@ input:focus, select:focus {
     border-radius: var(--radius);
     border-left: 4px solid var(--primary-color);
 }
+
 .card-interno-autoridade h4 {
     margin: 0 0 12px 0;
     font-size: 0.95rem;
     color: var(--primary-color);
 }
+
 .sub-grid-autoridade {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -184,8 +200,61 @@ input:focus, select:focus {
     transition: background-color 0.2s, transform 0.1s;
 }
 
-.btn-gerar:hover { background-color: var(--primary-hover); }
-.btn-gerar:active { transform: scale(0.98); }
+.btn-gerar:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-gerar:active {
+    transform: scale(0.98);
+}
+
+.acoes-secundarias {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.btn-secundario,
+.btn-limpar {
+    flex: 1;
+    padding: 11px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-secundario {
+    background-color: #eef2ef;
+    color: var(--primary-color);
+    border: 1px solid #c5d3c6;
+}
+
+.btn-secundario:hover {
+    background-color: #dfe8e0;
+}
+
+.btn-limpar {
+    background-color: #fdf2f2;
+    color: #9b2c2c;
+    border: 1px solid #f5c6cb;
+}
+
+.btn-limpar:hover {
+    background-color: #fbe3e4;
+}
+
+/* Feedback visual de validação */
+.campo-valido {
+    border-color: #27ae60 !important;
+    background-color: #f0fff4 !important;
+}
+
+.campo-invalido {
+    border-color: #c0392b !important;
+    background-color: #fff5f5 !important;
+}
 
 /* ==========================================================================
    MODAIS
@@ -193,7 +262,10 @@ input:focus, select:focus {
 .modal-backdrop {
     display: none;
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     z-index: 9999;
@@ -209,7 +281,7 @@ input:focus, select:focus {
     max-width: 600px;
     max-height: 85vh;
     border-radius: var(--radius);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     animation: surgimentoModal 0.2s ease-out;
@@ -231,11 +303,20 @@ input:focus, select:focus {
     align-items: center;
 }
 
-.modal-header h3 { margin: 0; font-size: 1.2rem; }
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
 
 .btn-fechar-modal {
-    background: none; border: none; color: white;
-    font-size: 1.5rem; cursor: pointer; padding: 0; margin: 0; width: auto;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    width: auto;
 }
 
 .modal-body {
@@ -244,17 +325,28 @@ input:focus, select:focus {
     font-size: 0.95rem;
     line-height: 1.6;
 }
-.modal-body ol { padding-left: 20px; margin: 0 0 15px 0; }
-.modal-body li { margin-bottom: 10px; }
+
+.modal-body ol {
+    padding-left: 20px;
+    margin: 0 0 15px 0;
+}
+
+.modal-body li {
+    margin-bottom: 10px;
+}
 
 .alert-box {
     background-color: #dfedd6;
     border-left: 4px solid var(--primary-color);
-    padding: 12px; border-radius: 4px; margin-top: 15px;
+    padding: 12px;
+    border-radius: 4px;
+    margin-top: 15px;
 }
 
-/* Documento oculto na tela */
-.documento-oficial { display: none; }
+/* Documento fallback oculto na tela */
+.documento-oficial {
+    display: none;
+}
 
 /* ==========================================================================
    RESPONSIVIDADE MOBILE
@@ -264,78 +356,57 @@ input:focus, select:focus {
     .container-cadastro { padding: 15px; }
     .grid-form { grid-template-columns: 1fr; gap: 15px; }
     .form-group.full-width { grid-column: span 1; }
-    .container-botoes-tutorial { flex-direction: column; gap: 8px; }
+    .container-botoes-tutorial,
+    .acoes-secundarias { flex-direction: column; gap: 8px; }
     .modal-content { max-height: 90vh; }
     .sub-grid-autoridade { grid-template-columns: 1fr; }
 }
 
 /* ==========================================================================
-   IMPRESSÃO A4
-   Margens: Esquerda 3cm | Direita 1cm | Superior 1cm | Inferior 2cm
+   IMPRESSÃO A4 (FALLBACK OFFLINE / IMPRESSÃO DIRETA)
    ========================================================================== */
 @media print {
 
-    /* ============================================================
-       OPÇÃO ESCOLHIDA: CENTRALIZADO
-       Para manter ABNT (3cm esq / 1cm dir), troque para:
-       margin: 1cm 1cm 2cm 3cm;
-       ============================================================ */
     @page {
         size: A4 portrait;
-        margin: 1cm 2cm 2cm 2cm;   /* ← top right bottom left — SIMÉTRICO */
+        margin: 1cm 2cm 1.5cm 2cm;
     }
-    
-    @media print {
-
-    /* Assinatura do requerente (página 1) — mais espaçada */
-    .pagina:nth-child(1) .assinatura {
-        margin-top: 75px !important;   /* ← ajuste aqui a distância desejada */
-    }
-
-    /* Opcional: também empurra a data à direita, para casar visualmente */
-    .pagina:nth-child(1) .alinhado-direita {
-        margin-top: 60px !important;
-        margin-bottom: 60px !important;
-    }
-}
 
     html, body {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
         background: #fff !important;
-        font-family: "Times New Roman", Times, serif;
+        font-family: "Times New Roman", Times, Georgia, serif;
         font-size: 12pt;
-        line-height: 1.4;
+        line-height: 1.38;
         margin: 0 !important;
         padding: 0 !important;
         display: block !important;
-        width: 100% !important;
+        width: 170mm !important;
         height: auto !important;
         overflow: visible !important;
     }
 
     .container-cadastro,
     .modal-backdrop,
-    button { display: none !important; }
+    button {
+        display: none !important;
+    }
 
-    .documento-oficial { display: block !important; }
+    .documento-oficial {
+        display: block !important;
+        width: 170mm !important;
+    }
 
-    /* Página em fluxo normal — a margem vem do @page */
+    /* Sem max-height fixo ou overflow: hidden para não cortar no Safari iOS */
     .pagina {
-        width: auto !important;
-        height: auto !important;
-        min-height: 0 !important;
-        max-height: 26.5cm !important;  /* ← limite de segurança (26.7 útil - folga) */
+        width: 170mm !important;
         padding: 0 !important;
         margin: 0 !important;
         box-sizing: border-box;
-        page-break-inside: auto;
-        break-inside: auto;
-        overflow: hidden;
         position: relative;
     }
 
-    /* Só as duas primeiras páginas quebram */
     .pagina:nth-child(1),
     .pagina:nth-child(2) {
         page-break-after: always;
@@ -349,17 +420,18 @@ input:focus, select:focus {
 
     .brasao-republica {
         display: block !important;
-        width: 2.2cm;
-        height: auto;
-        margin: 0 auto 8px auto;
+        width: 2.1cm;
+        height: 2.1cm;
+        object-fit: contain;
+        margin: 0 auto 6px auto;
     }
 
     .cabecalho {
         text-align: center;
         font-weight: bold;
         text-transform: uppercase;
-        margin-bottom: 15px !important; 
-        font-size: 12pt;
+        margin-bottom: 14px !important;
+        font-size: 11.5pt;
         line-height: 1.2 !important;
     }
 
@@ -369,10 +441,12 @@ input:focus, select:focus {
         justify-content: space-between !important;
         align-items: flex-start !important;
         width: 100%;
-        margin-bottom: 25px;  /* era 30px */
+        margin-bottom: 20px;
     }
 
-    .dados-identificacao { width: 50%; }
+    .dados-identificacao {
+        width: 50%;
+    }
 
     .quadro-despacho {
         display: block !important;
@@ -380,12 +454,11 @@ input:focus, select:focus {
         border: 1.5px solid #000 !important;
         padding: 8px 6px;
         font-size: 10.5pt;
-        line-height: 1.4;
+        line-height: 1.35;
         box-sizing: border-box;
         background: #fff !important;
         page-break-inside: avoid;
         break-inside: avoid;
-        overflow: hidden;
     }
 
     .linha-assinatura-cmt-reg {
@@ -398,64 +471,61 @@ input:focus, select:focus {
         padding: 0 2px;
         box-sizing: border-box;
         max-width: 100%;
-        overflow: hidden;
     }
 
     .recuo-paragrafo {
         text-indent: 2cm;
         text-align: justify;
-        margin-bottom: 8px;  /* era 12px */
+        margin-bottom: 8px;
     }
 
     .alinhado-direita {
         text-align: right;
-        margin-top: 10px !important;    /* era 35px */
-        margin-bottom: 10px !important; /* era 45px */
+        margin-top: 12px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .pagina:nth-child(1) .alinhado-direita {
+        margin-top: 40px !important;
+        margin-bottom: 45px !important;
     }
 
     .assinatura {
         text-align: center;
-        margin-top: 25px !important;    /* era 45px */
+        margin-top: 25px !important;
         font-weight: bold;
     }
-    
+
+    .pagina:nth-child(1) .assinatura {
+        margin-top: 60px !important;
+    }
+
     .pagina p {
         margin-bottom: 8px !important;
         line-height: 1.35 !important;
     }
 
     .dados-informativos {
-	margin-left: 1.5cm !important;
+        margin-left: 1.5cm !important;
         margin-bottom: 10px !important;
         line-height: 1.25 !important;
         font-size: 11pt !important;
     }
 
-    .nome-guerra-negrito { font-weight: bold; }
+    .nome-guerra-negrito {
+        font-weight: bold;
+    }
 
+    /* Linhas reais via border-bottom (funciona no iOS Safari) */
     .linhas-parecer-manuscrito {
         width: 100%;
-        height: 3.8cm;
-        margin-top: 15px;
+        margin-top: 10px;
         margin-bottom: 20px;
-        background-image: linear-gradient(
-            to bottom,
-            transparent 31px,
-            #000 31px,
-            #000 32px
-        );
-        background-size: 100% 32px;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+    }
+
+    .linha-parecer {
+        width: 100%;
+        height: 28px;
+        border-bottom: 1px solid #000;
     }
 }
-
-	/* Feedback visual */
-	.campo-valido {
-		border-color: #27ae60 !important;
-		background-color: #f0fff4 !important;
-	}
-	.campo-invalido {
-		border-color: #c0392b !important;
-		background-color: #fff5f5 !important;
-	}
